@@ -1,9 +1,16 @@
-#include <vector>
+#ifndef ASTROOBJ 
+#define ASTROOBJ
 
+#include <vector>
+#include <Godot.hpp>
+#include <Spatial.hpp>
 #include "../libRnfpp/Rnfpp.hpp"
 
-class AstroObject
+namespace godot{
+
+class AstroObject : public Spatial
 {
+	GODOT_CLASS(Astroobject, Spatial)
 private:
 	Rnfpp position;
 	Rnfpp velocity;
@@ -31,3 +38,7 @@ private:
 	Rnfpp calculateForce(int distance, Rnfpp direction);
 	void updateRotation();
 };
+
+}
+
+#endif
