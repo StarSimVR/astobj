@@ -4,13 +4,13 @@
 #include <vector>
 #include <Godot.hpp>
 #include <Spatial.hpp>
-#include "../libRnfpp/Rnfpp.hpp"
+#include "libRnfpp/Rnfpp.hpp"
 
 namespace godot{
 
 class AstroObject : public Spatial
 {
-	GODOT_CLASS(Astroobject, Spatial)
+	GODOT_CLASS(AstroObject, Spatial)
 private:
 	Rnfpp position;
 	Rnfpp velocity;
@@ -22,7 +22,9 @@ private:
 	std::vector<AstroObject> affectedObjects;
 
 public:
-	AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, int mass);
+	//AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, int mass);
+	AstroObject();
+	void _init();
 	void applyForce(Rnfpp force);
 	void updateInfluence();
 	void updatePosition();
@@ -30,6 +32,7 @@ public:
 	int getMass();
 	Rnfpp getPosition();
 	void setPosition(Rnfpp position);
+	static void _register_methods();
 
 private:
 	void iter();

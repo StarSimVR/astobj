@@ -1,5 +1,18 @@
 #include "AstroObject.hpp"
 
+using namespace godot;
+
+AstroObject::AstroObject()
+{
+
+}
+
+void AstroObject::_register_methods()
+{
+
+}
+
+/*
 AstroObject::AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, int mass)
 {
 	this->position = position;
@@ -9,8 +22,12 @@ AstroObject::AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, i
 	this->rotationSpeed = rotationSpeed;
 	this->mass = mass;
 	this->calculateInfluenceRadius();
-}
+}*/
 
+void AstroObject::_init()
+{
+
+}
 
 void AstroObject::applyForce(Rnfpp force)
 {
