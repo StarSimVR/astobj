@@ -17,7 +17,7 @@
 */
 
 /**
- * @author      Luka-sama
+ * @author      Luka-sama, Niklas Leukroth
  * @brief       Register GDNative classes.
  * @copyright   (C) 2022 Luka-sama.
  *              This file is licensed GPL 2 as of June 1991.

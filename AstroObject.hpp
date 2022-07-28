@@ -4,7 +4,6 @@
 #include <vector>
 #include <Godot.hpp>
 #include <Spatial.hpp>
-#include "libRnfpp/Rnfpp.hpp"
 
 namespace godot{
 
@@ -12,10 +11,10 @@ class AstroObject : public Spatial
 {
 	GODOT_CLASS(AstroObject, Spatial)
 private:
-	Rnfpp position;
-	Rnfpp velocity;
-	Rnfpp acceleration;
-	Rnfpp orientation;
+	Vector3 position;
+	Vector3 velocity;
+	Vector3 acceleration;
+	Vector3 orientation;
 	int rotationSpeed;
 	int mass;
 	int influenceRadius;
@@ -25,20 +24,21 @@ public:
 	//AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, int mass);
 	AstroObject();
 	void _init();
-	void applyForce(Rnfpp force);
+	void applyForce(Vector3 force);
 	void updateInfluence();
 	void updatePosition();
 	void init(std::vector<AstroObject> affectedObjects);
 	int getMass();
-	Rnfpp getPosition();
-	void setPosition(Rnfpp position);
+	void setMass(int mass);
+	Vector3 getPosition();
+	void setPosition(Vector3 position);
 	static void _register_methods();
 
 private:
 	void iter();
-	int calculateDistance(Rnfpp position);
+	int calculateDistance(Vector3 position);
 	void calculateInfluenceRadius();
-	Rnfpp calculateForce(int distance, Rnfpp direction);
+	Vector3 calculateForce(int distance, Vector3 direction);
 	void updateRotation();
 };
 
