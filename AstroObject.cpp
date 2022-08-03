@@ -1,9 +1,13 @@
 #include "AstroObject.hpp"
-#include "libRnfpp/Rnfpp.hpp"
 
 using namespace godot;
 
 AstroObject::AstroObject()
+{
+
+}
+
+AstroObject::~AstroObject()
 {
 
 }
@@ -14,32 +18,37 @@ void AstroObject::_register_methods()
 	register_method("applyForce", &AstroObject::applyForce);
 	register_method("updateInfluence", &AstroObject::updateInfluence);
 	register_method("updatePosition", &AstroObject::updatePosition);
-	//register_method("init", &AstroObject::init);
-	register_property<AstroObject, int>("mass", &AstroObject::setMass, &AstroObject::getMass, 0);
+	register_method("addObject", &AstroObject::addObject);
 
-	register_property<AstroObject, Vector3>("position", &AstroObject::setPosition, &AstroObject::getPosition, Vector3(0,0,0));
+	register_property<AstroObject, Vector3>("position", &AstroObject::position, Vector3(0,0,0));
+	register_property<AstroObject, Vector3>("velocity", &AstroObject::velocity, Vector3(0, 0, 0));
+	register_property<AstroObject, Vector3>("acceleration", &AstroObject::acceleration, Vector3(0, 0, 0));
+	register_property<AstroObject, Vector3>("orientation", &AstroObject::acceleration, Vector3(0, 0, 0));
+	register_property<AstroObject, int>("rotationSpeed", &AstroObject::rotationSpeed, 0);
+	register_property<AstroObject, double>("mass", &AstroObject::mass, 0.0);
 }
-
-/*
-AstroObject::AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, int mass)
-{
-	this->position = position;
-	this->velocity = Vector3{0,0,0};
-	this->acceleration = Vector3{0,0,0};
-	this->orientation = orientation;
-	this->rotationSpeed = rotationSpeed;
-	this->mass = mass;
-	this->calculateInfluenceRadius();
-}*/
 
 void AstroObject::_init()
 {
 
 }
 
+void AstroObject::addObject(Object* object)
+{
+	AstroObject* astroObject = Object::cast_to<AstroObject>(object);
+	if(astroObject)
+	{
+		this->affectedObjects.push_back(astroObject);
+	}
+}
+
 void AstroObject::applyForce(Vector3 force)
 {
-	//this->acceleration += force;
+	Vector3 result;
+	result.x = force.x / this->getMass();
+	result.y = force.y / this->getMass();
+	result.z = force.z / this->getMass();
+	this->acceleration += result;
 }
 
 
@@ -52,21 +61,14 @@ void AstroObject::updateInfluence()
 
 void AstroObject::updatePosition()
 {
-	
 	this->velocity += this->acceleration;
 	this->position += this->velocity;
 	this->acceleration = Vector3(0,0,0);
-	
+	set_translation(this->position);
 }
 
 
-void AstroObject::init(std::vector<AstroObject> affectedObjects)
-{
-	this->affectedObjects = affectedObjects;
-}
-
-
-int AstroObject::getMass()
+double AstroObject::getMass()
 {
 	return this->mass;
 }
@@ -92,17 +94,15 @@ void AstroObject::setPosition(Vector3 position)
 void AstroObject::iter()
 {
 	
-	for(AstroObject & elem : this->affectedObjects)
+	for(AstroObject * elem : this->affectedObjects)
 	{
-		if(this->position == elem.getPosition()) continue;
-		int distance = this->calculateDistance(elem.getPosition());
-		if (distance > this->influenceRadius)
-			continue;
+		if(this->position == elem->getPosition()) continue;
+		int distanceSquared = this->calculateDistance(elem->getPosition());
 
-		Vector3 direction = elem.getPosition() - this->position;
+		Vector3 direction = elem->getPosition() - this->position;
 		direction.normalized();
-		Vector3 force = this->calculateForce(distance, direction);
-		elem.applyForce(force);
+		Vector3 force = this->calculateForce(distanceSquared, direction, elem->getMass());
+		elem->applyForce(force);
 	}
 	
 }
@@ -112,23 +112,19 @@ int AstroObject::calculateDistance(Vector3 position)
 {
 	
 	float distance = this->position.distance_to(position);
-	//calculate actual distance
-	//...
-	return (int)distance;
+	distance *= this->sD;
+	return (int)(distance * distance);
 }
 
 
-void AstroObject::calculateInfluenceRadius()
+Vector3 AstroObject::calculateForce(int distance, Vector3 direction, double mass)
 {
-	//calculate the gravitational influence based on the mass
-	this->influenceRadius = 0;
-}
-
-
-Vector3 AstroObject::calculateForce(int distance, Vector3 direction)
-{
-	//calculate the force influencing an object based on the mass and distance
-	return Vector3{0,0,0};
+	double forceNoDirection = (this->G * this->eM * this->getMass() * mass) / distance;
+	Vector3 force;
+	force.x = direction.x * forceNoDirection;
+	force.y = direction.y * forceNoDirection;
+	force.z = direction.z * forceNoDirection;
+	return force;
 }
 
 

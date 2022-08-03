@@ -10,25 +10,27 @@ namespace godot{
 class AstroObject : public Spatial
 {
 	GODOT_CLASS(AstroObject, Spatial)
-private:
+public:
 	Vector3 position;
 	Vector3 velocity;
 	Vector3 acceleration;
 	Vector3 orientation;
 	int rotationSpeed;
-	int mass;
-	int influenceRadius;
-	std::vector<AstroObject> affectedObjects;
+	double mass;
+	std::vector<AstroObject*> affectedObjects;
+	const int sD = 13927;
+	const double eM = 5.972;
+	const double G = 6.672;
 
 public:
-	//AstroObject(Rnfpp position, Rnfpp orientation, int rotationSpeed, int mass);
 	AstroObject();
+	~AstroObject();
 	void _init();
+	void addObject(Object* object);
 	void applyForce(Vector3 force);
 	void updateInfluence();
 	void updatePosition();
-	void init(std::vector<AstroObject> affectedObjects);
-	int getMass();
+	double getMass();
 	void setMass(int mass);
 	Vector3 getPosition();
 	void setPosition(Vector3 position);
@@ -37,8 +39,7 @@ public:
 private:
 	void iter();
 	int calculateDistance(Vector3 position);
-	void calculateInfluenceRadius();
-	Vector3 calculateForce(int distance, Vector3 direction);
+	Vector3 calculateForce(int distance, Vector3 direction, double mass);
 	void updateRotation();
 };
 
