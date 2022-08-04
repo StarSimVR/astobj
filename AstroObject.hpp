@@ -5,6 +5,7 @@
 #include <Godot.hpp>
 #include <Spatial.hpp>
 
+/*These constants represent the gravitational constant, the astronomical unit and the mass parameter, scaled down*/
 #define G (double)(6.6743)
 #define AU (double)(2.23795)
 #define MP (double)(6.72006)
@@ -32,15 +33,12 @@ public:
 	void updateInfluence();
 	void updatePosition();
 	double getMass();
-	void setMass(int mass);
 	Vector3 getPosition();
-	void setPosition(Vector3 position);
 	static void _register_methods();
 
 private:
 	void iter();
-	double calculateDistance(Vector3 position);
-	Vector3 calculateForce(double distance, Vector3 direction, double mass);
+	Vector3 calculateForce(double distanceSquared, Vector3 direction, double mass);
 	void updateRotation();
 };
 
