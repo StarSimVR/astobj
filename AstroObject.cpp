@@ -45,9 +45,9 @@ void AstroObject::addObject(Object* object)
 void AstroObject::applyForce(Vector3 force)
 {
 	Vector3 result;
-	result.x = force.x / this->getMass();
-	result.y = force.y / this->getMass();
-	result.z = force.z / this->getMass();
+	result.x = (double)force.x / this->getMass();
+	result.y = (double)force.y / this->getMass();
+	result.z = (double)force.z / this->getMass();
 	this->acceleration += result;
 }
 
@@ -64,7 +64,7 @@ void AstroObject::updatePosition()
 	this->velocity += this->acceleration;
 	this->position += this->velocity;
 	this->acceleration = Vector3(0,0,0);
-	set_translation(this->position);
+	set_translation(this->position * 10);
 }
 
 
@@ -97,33 +97,34 @@ void AstroObject::iter()
 	for(AstroObject * elem : this->affectedObjects)
 	{
 		if(this->position == elem->getPosition()) continue;
-		int distanceSquared = this->calculateDistance(elem->getPosition());
+		double distanceSquared = this->calculateDistance(elem->getPosition());
 
 		Vector3 direction = elem->getPosition() - this->position;
 		direction.normalized();
 		Vector3 force = this->calculateForce(distanceSquared, direction, elem->getMass());
-		elem->applyForce(force);
+		this->applyForce(force);
+		elem->applyForce(force * -1);
 	}
 	
 }
 
 
-int AstroObject::calculateDistance(Vector3 position)
+double AstroObject::calculateDistance(Vector3 position)
 {
 	
-	float distance = this->position.distance_to(position);
-	distance *= this->sD;
-	return (int)(distance * distance);
+	double distance = this->position.distance_to(position);
+	return distance * distance;
 }
 
 
-Vector3 AstroObject::calculateForce(int distance, Vector3 direction, double mass)
+Vector3 AstroObject::calculateForce(double distance, Vector3 direction, double mass)
 {
-	double forceNoDirection = (this->G * this->eM * this->getMass() * mass) / distance;
+	
+	double forceNoDirection = G * this->getMass() * mass * MP / (distance * AU);
 	Vector3 force;
-	force.x = direction.x * forceNoDirection;
-	force.y = direction.y * forceNoDirection;
-	force.z = direction.z * forceNoDirection;
+	force.x = (double)direction.x * forceNoDirection;
+	force.y = (double)direction.y * forceNoDirection;
+	force.z = (double)direction.z * forceNoDirection;
 	return force;
 }
 

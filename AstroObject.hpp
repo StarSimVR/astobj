@@ -5,6 +5,10 @@
 #include <Godot.hpp>
 #include <Spatial.hpp>
 
+#define G (double)(6.6743)
+#define AU (double)(2.23795)
+#define MP (double)(6.72006)
+
 namespace godot{
 
 class AstroObject : public Spatial
@@ -18,9 +22,6 @@ public:
 	int rotationSpeed;
 	double mass;
 	std::vector<AstroObject*> affectedObjects;
-	const int sD = 13927;
-	const double eM = 5.972;
-	const double G = 6.672;
 
 public:
 	AstroObject();
@@ -38,8 +39,8 @@ public:
 
 private:
 	void iter();
-	int calculateDistance(Vector3 position);
-	Vector3 calculateForce(int distance, Vector3 direction, double mass);
+	double calculateDistance(Vector3 position);
+	Vector3 calculateForce(double distance, Vector3 direction, double mass);
 	void updateRotation();
 };
 
