@@ -2,28 +2,28 @@
 
 using namespace godot;
 
-/*
-	@brief 			The constructor for the AstroObject class, left empty due to godot
-*/
+/**
+ *	@brief 			The constructor for the AstroObject class, left empty due to godot
+ */
 AstroObject::AstroObject()
 {
 
 }
 
 
-/*
-	@brief 			The destructor for the AstroObject class
-*/
+/**
+ *	@brief 			The destructor for the AstroObject class
+ */
 AstroObject::~AstroObject()
 {
 	//ToDo: Implement
 }
 
 
-/*
-	@brief 			Function to register the methods and properties that are relevant for godot
-	@return 		void
-*/
+/**
+ *	@brief 			Function to register the methods and properties that are relevant for godot
+ *	@return 		void
+ */
 void AstroObject::_register_methods()
 {
 	/*Register the methods*/
@@ -43,21 +43,21 @@ void AstroObject::_register_methods()
 }
 
 
-/*
-	@brief 			The _init() function which is required by godot, left empty
-	@return 		void
-*/
+/**
+ *	@brief 			The _init() function which is required by godot, left empty
+ *	@return 		void
+ */
 void AstroObject::_init()
 {
 	//Nothing is needed here
 }
 
 
-/*
-	@brief 			Function to add an object to the internaly managed object list
-	@param	object 	Pointer to the object
-	@return 		void
-*/
+/**
+ *	@brief 			Function to add an object to the internaly managed object list
+ *	@param	object 	Pointer to the object
+ *	@return 		void
+ */
 void AstroObject::addObject(Object* object)
 {
 	//Safty cast to check if the incoming objet is of type AstroObject
@@ -69,11 +69,11 @@ void AstroObject::addObject(Object* object)
 }
 
 
-/*
-	@brief 			Function to add an external force to the acceleration
-	@param	force 	The force working on the object
-	@return 		void
-*/
+/**
+ *	@brief 			Function to add an external force to the acceleration
+ *	@param	force 	The force working on the object
+ *	@return 		void
+ */
 void AstroObject::applyForce(Vector3 force)
 {
 	//The force F has to be devided by the mass of the body to get the acceleration
@@ -85,10 +85,10 @@ void AstroObject::applyForce(Vector3 force)
 }
 
 
-/*
-	@brief 			Function to update the influence this object has on others
-	@return 		void
-*/
+/**
+ *	@brief 			Function to update the influence this object has on others
+ *	@return 		void
+ */
 void AstroObject::updateInfluence()
 {
 	this->iter();
@@ -96,10 +96,10 @@ void AstroObject::updateInfluence()
 }
 
 
-/*
-	@brief 			Function to update the objects position based on its acceleration and velocity
-	@return 		void
-*/
+/**
+ *	@brief 			Function to update the objects position based on its acceleration and velocity
+ *	@return 		void
+ */
 void AstroObject::updatePosition()
 {
 	this->velocity += this->acceleration;
@@ -111,30 +111,30 @@ void AstroObject::updatePosition()
 }
 
 
-/*
-	@brief 			Getter for the obejcts mass
-	@return 		Mass as double
-*/
+/**
+ *	@brief 			Getter for the obejcts mass
+ *	@return 		Mass as double
+ */
 double AstroObject::getMass()
 {
 	return this->mass;
 }
 
 
-/*
-	@brief 			Getter for the objects position
-	@return			Position as godot::Vector3
-*/
+/**
+ *	@brief 			Getter for the objects position
+ *	@return			Position as godot::Vector3
+ */
 Vector3 AstroObject::getPosition()
 {
 	return this->position;
 }
 
 
-/*
-	@brief 			The main function of the class, updates the influence of every other object and itself
-	@return 		void
-*/
+/**
+ *	@brief 			The main function of the class, updates the influence of every other object and itself
+ *	@return 		void
+ */
 void AstroObject::iter()
 {
 	
@@ -158,13 +158,13 @@ void AstroObject::iter()
 }
 
 
-/*
-	@brief 						Function to calculate the force between the bodies
-	@param	distanceSquared 	The distance between the two objects squared, as a double
-	@param 	direction 			The direction from our object to the other object normalized, as Vector3
-	@param 	mass 				The mass of the other object, as a double
-	@return 					The force from our object to the other object, as Vector3
-*/
+/**
+ *	@brief 						Function to calculate the force between the bodies
+ *	@param	distanceSquared 	The distance between the two objects squared, as a double
+ *	@param 	direction 			The direction from our object to the other object normalized, as Vector3
+ *	@param 	mass 				The mass of the other object, as a double
+ *	@return 					The force from our object to the other object, as Vector3
+ */
 Vector3 AstroObject::calculateForce(double distanceSquared, Vector3 direction, double mass)
 {
 	//Based on Newtons law of gravity
@@ -177,10 +177,10 @@ Vector3 AstroObject::calculateForce(double distanceSquared, Vector3 direction, d
 }
 
 
-/*
-	@brief 			Function to rotate the object around its rotationVector
-	@return 		void
-*/
+/**
+ *	@brief 			Function to rotate the object around its rotationVector
+ *	@return 		void
+ */
 void AstroObject::updateRotation()
 {
 	//ToDo: Implement
