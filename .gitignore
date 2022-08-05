@@ -1,2 +1,15 @@
+# Build artifacts.
+*.a
+*.bak
+*.dll
+*.lib
 *.o
 *.obj
+*.so
+
+# Documentation artifacts.
+*.pdf
+
+# Doxygen directories.
+html/
+latex/
