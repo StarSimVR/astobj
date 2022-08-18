@@ -39,7 +39,7 @@ void AstroObject::_register_methods()
 	register_property<AstroObject, Vector3>("acceleration", &AstroObject::acceleration, Vector3(0, 0, 0));
 	register_property<AstroObject, Vector3>("orientation", &AstroObject::acceleration, Vector3(0, 0, 0));
 	register_property<AstroObject, int>("rotationSpeed", &AstroObject::rotationSpeed, 0);
-	register_property<AstroObject, double>("mass", &AstroObject::mass, 0.0);
+	register_property<AstroObject, real_t>("mass", &AstroObject::mass, 0.0);
 }
 
 
@@ -76,12 +76,7 @@ void AstroObject::addObject(Object* object)
  */
 void AstroObject::applyForce(Vector3 force)
 {
-	//The force F has to be devided by the mass of the body to get the acceleration
-	Vector3 result;
-	result.x = (double)force.x / this->getMass();
-	result.y = (double)force.y / this->getMass();
-	result.z = (double)force.z / this->getMass();
-	this->acceleration += result;
+	this->acceleration += force / this->getMass();
 }
 
 
@@ -100,14 +95,15 @@ void AstroObject::updateInfluence()
  *	@brief 			Function to update the objects position based on its acceleration and velocity
  *	@return 		void
  */
-void AstroObject::updatePosition()
+void AstroObject::updatePosition(real_t delta)
 {
-	this->velocity += this->acceleration;
+	this->velocity += this->acceleration;// * delta;
+	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
 	this->position += this->velocity;
 	//The acceleration has to be reset for the next iteration
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
-	set_translation(this->position * 10);
+	set_translation(this->position);
 }
 
 
@@ -115,7 +111,7 @@ void AstroObject::updatePosition()
  *	@brief 			Getter for the obejcts mass
  *	@return 		Mass as double
  */
-double AstroObject::getMass()
+real_t AstroObject::getMass()
 {
 	return this->mass;
 }
@@ -144,7 +140,7 @@ void AstroObject::iter()
 		if(this->position == elem->getPosition()) continue;
 
 		/*Calculate the force on ourself and the other object*/
-		double distanceSquared = this->position.distance_squared_to(elem->getPosition());
+		real_t distanceSquared = this->position.distance_squared_to(elem->getPosition());
 		Vector3 direction = elem->getPosition() - this->position;
 		direction.normalized();
 		Vector3 force = this->calculateForce(distanceSquared, direction, elem->getMass());
@@ -165,15 +161,11 @@ void AstroObject::iter()
  *	@param 	mass 				The mass of the other object, as a double
  *	@return 					The force from our object to the other object, as Vector3
  */
-Vector3 AstroObject::calculateForce(double distanceSquared, Vector3 direction, double mass)
+Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, real_t mass)
 {
 	//Based on Newtons law of gravity
-	double forceNoDirection = G * this->getMass() * mass * MP / (distanceSquared * AU);
-	Vector3 force;
-	force.x = (double)direction.x * forceNoDirection;
-	force.y = (double)direction.y * forceNoDirection;
-	force.z = (double)direction.z * forceNoDirection;
-	return force;
+	real_t forceNoDirection = G * this->getMass() * mass * MP / (distanceSquared * AU);
+	return direction * forceNoDirection;
 }
 
 

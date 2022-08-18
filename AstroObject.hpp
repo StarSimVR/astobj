@@ -2,13 +2,13 @@
 #define ASTROOBJ
 
 #include <vector>
-#include <Godot.hpp>
+#include <godot.hpp>
 #include <Spatial.hpp>
 
 /*These constants represent the gravitational constant, the astronomical unit and the mass parameter, scaled down*/
-#define G (double)(6.6743)
-#define AU (double)(2.23795)
-#define MP (double)(6.72006)
+#define G (real_t)(6.6743)
+#define AU (real_t)(2.23795)
+#define MP (real_t)(6.72006)
 
 namespace godot{
 
@@ -21,7 +21,7 @@ public:
 	Vector3 acceleration;
 	Vector3 orientation;
 	int rotationSpeed;
-	double mass;
+	real_t mass;
 	std::vector<AstroObject*> affectedObjects;
 
 public:
@@ -31,14 +31,14 @@ public:
 	void addObject(Object* object);
 	void applyForce(Vector3 force);
 	void updateInfluence();
-	void updatePosition();
-	double getMass();
+	void updatePosition(real_t data);
+	real_t getMass();
 	Vector3 getPosition();
 	static void _register_methods();
 
 private:
 	void iter();
-	Vector3 calculateForce(double distanceSquared, Vector3 direction, double mass);
+	Vector3 calculateForce(real_t distanceSquared, Vector3 direction, real_t mass);
 	void updateRotation();
 };
 
