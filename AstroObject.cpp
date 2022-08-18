@@ -97,9 +97,9 @@ void AstroObject::updateInfluence()
  */
 void AstroObject::updatePosition(real_t delta)
 {
-	this->velocity += this->acceleration;// * delta;
-	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
-	this->position += this->velocity;
+	this->velocity += this->acceleration * delta;
+	this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
+	//this->position += this->velocity;
 	//The acceleration has to be reset for the next iteration
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
