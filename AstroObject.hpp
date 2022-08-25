@@ -8,7 +8,7 @@
 /*These constants represent the gravitational constant, the astronomical unit and the mass parameter, scaled down*/
 #define G (real_t)(6.6743)
 #define AU (real_t)(2.23795)
-#define MP (real_t)(6.72006)
+#define MP (real_t)(0.672006)
 
 namespace godot{
 
