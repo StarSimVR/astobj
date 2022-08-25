@@ -32,6 +32,8 @@ void AstroObject::_register_methods()
 	register_method("updateInfluence", &AstroObject::updateInfluence);
 	register_method("updatePosition", &AstroObject::updatePosition);
 	register_method("addObject", &AstroObject::addObject);
+	register_method("faster", &AstroObject::faster);
+	register_method("slower", &AstroObject::slower);
 
 	/*Register the properties*/
 	register_property<AstroObject, Vector3>("position", &AstroObject::position, Vector3(0,0,0));
@@ -103,11 +105,11 @@ void AstroObject::updatePosition(real_t delta)
 	//The acceleration has to be reset for the next iteration
 	//this->position += this->velocity * delta + 0.5f * this->acceleration * delta * delta;
 	//this->velocity += this->acceleration * delta;
-	this->velocity += delta * this->acceleration;
-	this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
+	this->velocity += delta * this->acceleration * this->speed;
+	this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta * this->speed;
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
-	set_translation(this->position / 10000000);
+	set_translation(this->position / 5000000);
 }
 
 
@@ -180,4 +182,14 @@ Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, r
 void AstroObject::updateRotation()
 {
 	//ToDo: Implement
+}
+
+void AstroObject::faster()
+{
+	this->speed *= 2.0f;
+}
+
+void AstroObject::slower()
+{
+	this->speed /= 2.0f;
 }
