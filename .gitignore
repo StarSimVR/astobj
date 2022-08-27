@@ -13,3 +13,4 @@
 # Doxygen directories.
 html/
 latex/
+.vscode/

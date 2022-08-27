@@ -23,7 +23,6 @@ public:
 	int rotationSpeed;
 	real_t mass;
 	std::vector<AstroObject*> affectedObjects;
-	real_t speed = 1.0f;
 
 public:
 	AstroObject();
@@ -36,8 +35,6 @@ public:
 	real_t getMass();
 	Vector3 getPosition();
 	static void _register_methods();
-	void faster();
-	void slower();
 
 private:
 	void iter();
