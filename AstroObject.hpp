@@ -35,6 +35,8 @@ public:
 	real_t getMass();
 	Vector3 getPosition();
 	static void _register_methods();
+	void absorbObject(AstroObject* toAbsorb);
+	void free();
 
 private:
 	void iter();

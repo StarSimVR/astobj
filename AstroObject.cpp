@@ -140,11 +140,20 @@ void AstroObject::iter()
 	
 	for(AstroObject * elem : this->affectedObjects)
 	{
-		//If the objects collide, we skip for now. This will later be changed to merge the objects
-		if(this->position == elem->getPosition()) continue;
+		if(!elem) continue;
 
 		/*Calculate the force on ourself and the other object*/
-		real_t distanceSquared = this->position.distance_squared_to(elem->getPosition());
+		real_t distance = this->position.distance_to(elem->getPosition());
+		//If the objects collide, we skip for now. This will later be changed to merge the objects
+		if( distance / 100000.0f < 1.0f) 
+		{
+			if(this->getMass() >= elem->getMass()) this->absorbObject(elem);
+			else elem->absorbObject(this);
+			continue;
+		}
+
+		real_t distanceSquared = distance * distance;
+
 		Vector3 direction = elem->getPosition() - this->position;
 		direction.normalized();
 		Vector3 force = this->calculateForce(distanceSquared, direction, elem->getMass());
@@ -180,4 +189,17 @@ Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, r
 void AstroObject::updateRotation()
 {
 	//ToDo: Implement
+}
+
+
+void AstroObject::absorbObject(AstroObject* toAbsorb)
+{
+	this->mass += toAbsorb->getMass();
+	toAbsorb->free();
+}
+
+
+void AstroObject::free()
+{
+	this->queue_free();
 }
