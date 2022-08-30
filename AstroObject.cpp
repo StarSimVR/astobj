@@ -103,13 +103,13 @@ void AstroObject::updatePosition(real_t delta)
 	//The acceleration has to be reset for the next iteration
 	//this->position += this->velocity * delta + 0.5f * this->acceleration * delta * delta;
 	//this->velocity += this->acceleration * delta;
-	// this->velocity += delta * this->acceleration;
+	//this->velocity += delta * this->acceleration;
 	// this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
 	this->position += this->velocity * delta;
 	this->velocity += this->acceleration * delta;
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
-	set_translation(this->position * 5.0f);
+	set_translation(this->position / 149597870700);
 }
 
 
@@ -179,7 +179,7 @@ void AstroObject::iter()
 Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, real_t mass)
 {
 	//Based on Newtons law of gravity
-	real_t forceNoDirection = G * this->getMass() * mass * MP/ (distanceSquared * AU_SQUARED);
+	real_t forceNoDirection = G * this->getMass() * mass/ (distanceSquared);
 	return direction * forceNoDirection;
 }
 

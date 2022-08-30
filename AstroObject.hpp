@@ -6,9 +6,7 @@
 #include <Spatial.hpp>
 
 /*These constants represent the gravitational constant, the astronomical unit and the mass parameter, scaled down*/
-#define G (real_t)(6.673)
-#define AU_SQUARED (real_t)(2237952291797.391849)
-#define MP (real_t)(0.0672006)
+#define G (real_t)(0.6673)
 
 namespace godot{
 
