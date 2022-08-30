@@ -179,7 +179,7 @@ void AstroObject::iter()
 Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, real_t mass)
 {
 	//Based on Newtons law of gravity
-	real_t forceNoDirection = G * this->getMass() * mass * MP * 1000000000000/ (distanceSquared * AU_SQUARED);
+	real_t forceNoDirection = G * this->getMass() * mass * MP/ (distanceSquared * AU_SQUARED);
 	return direction * forceNoDirection;
 }
 
