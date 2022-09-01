@@ -29,7 +29,7 @@ public:
 	void addObject(Object* object);
 	void applyForce(Vector3 force);
 	void updateInfluence();
-	void updatePosition(real_t data);
+	void updatePosition(real_t data, const int fps);
 	real_t getMass();
 	Vector3 getPosition();
 	static void _register_methods();
