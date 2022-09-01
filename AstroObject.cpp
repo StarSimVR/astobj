@@ -95,8 +95,10 @@ void AstroObject::updateInfluence()
  *	@brief 			Function to update the objects position based on its acceleration and velocity
  *	@return 		void
  */
-void AstroObject::updatePosition(real_t delta)
+void AstroObject::updatePosition(real_t delta, const int fps)
 {
+	const real_t factor = delta / (real_t) fps;
+
 	//this->velocity += this->acceleration * delta;
 	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
 	//this->position += this->velocity;
@@ -105,9 +107,9 @@ void AstroObject::updatePosition(real_t delta)
 	//this->velocity += this->acceleration * delta;
 	//this->velocity += delta * this->acceleration;
 	// this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
-	this->position += this->velocity * delta;
-	this->velocity += this->acceleration * delta;
-	this->acceleration = Vector3(0,0,0);
+	this -> velocity += this -> acceleration * factor;
+	this -> position += this -> velocity * factor;
+	this -> acceleration = Vector3 ((real_t) 0.f, (real_t) 0.f, (real_t) 0.f);
 	//The scene works with very small distances internally, that have to be scaled to be visible
 	set_translation(this->position / 149597870700);
 }
