@@ -2,7 +2,7 @@
 #define ASTROOBJ
 
 #include <vector>
-#include <godot.hpp>
+#include <Godot.hpp>
 #include <Spatial.hpp>
 
 /*These constants represent the gravitational constant, the astronomical unit and the mass parameter, scaled down*/
