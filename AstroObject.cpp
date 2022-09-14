@@ -1,4 +1,14 @@
 #include "AstroObject.hpp"
+#include <sstream>
+#include <string>
+
+template <typename T>
+std::string ToString(T val)
+{
+	std::stringstream stream;
+    stream << val;
+    return stream.str();
+}
 
 using namespace godot;
 
@@ -76,6 +86,7 @@ void AstroObject::addObject(Object* object)
  */
 void AstroObject::applyForce(Vector3 force)
 {
+	//The acceleration is calculated as m/s^2, but the velocity and position is stored in km, so the value has to be adjusted
 	this->acceleration += force / this->getMass();
 }
 
@@ -103,11 +114,16 @@ void AstroObject::updatePosition(real_t delta)
 	//The acceleration has to be reset for the next iteration
 	//this->position += this->velocity * delta + 0.5f * this->acceleration * delta * delta;
 	//this->velocity += this->acceleration * delta;
-	this->velocity += delta * this->acceleration;
-	this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
+	//this->velocity += delta * this->acceleration;
+	// this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
+	//this->velocity += this->acceleration * delta;
+	this->velocity += this->acceleration * 3600 * 3600;
+	this->position += this->velocity;
+	//this->position += this->velocity * delta;
+	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
-	set_translation(this->position / 5000000);
+	set_translation(this->position / 100000000000);
 }
 
 
@@ -145,17 +161,17 @@ void AstroObject::iter()
 		/*Calculate the force on ourself and the other object*/
 		real_t distance = this->position.distance_to(elem->getPosition());
 		//If the objects collide, we skip for now. This will later be changed to merge the objects
-		if( distance / 100000.0f < 1.0f) 
+		if( distance * 10.0f < 1.0f) 
 		{
-			if(this->getMass() >= elem->getMass()) this->absorbObject(elem);
-			else elem->absorbObject(this);
-			continue;
+			// if(this->getMass() >= elem->getMass()) this->absorbObject(elem);
+			// else elem->absorbObject(this);
+			// continue;
 		}
 
 		real_t distanceSquared = distance * distance;
 
 		Vector3 direction = elem->getPosition() - this->position;
-		direction.normalized();
+		direction = direction.normalized();
 		Vector3 force = this->calculateForce(distanceSquared, direction, elem->getMass());
 
 		/*Since the force working on our object and the other object is the same, we can simply flip the direction and use it 
@@ -177,7 +193,7 @@ void AstroObject::iter()
 Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, real_t mass)
 {
 	//Based on Newtons law of gravity
-	real_t forceNoDirection = G * this->getMass() * mass * MP / (distanceSquared * AU * 10000000);
+	real_t forceNoDirection = G * this->getMass() * mass * MP * 10000000 / distanceSquared;
 	return direction * forceNoDirection;
 }
 
