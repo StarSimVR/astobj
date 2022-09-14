@@ -87,7 +87,7 @@ void AstroObject::addObject(Object* object)
 void AstroObject::applyForce(Vector3 force)
 {
 	//The acceleration is calculated as m/s^2, but the velocity and position is stored in km, so the value has to be adjusted
-	this->acceleration += force / (this->getMass() * 1000);
+	this->acceleration += force / this->getMass();
 }
 
 
@@ -117,13 +117,13 @@ void AstroObject::updatePosition(real_t delta)
 	//this->velocity += delta * this->acceleration;
 	// this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
 	//this->velocity += this->acceleration * delta;
-	this->velocity += this->acceleration * 10;
+	this->velocity += this->acceleration * 3600 * 3600;
 	this->position += this->velocity;
 	//this->position += this->velocity * delta;
 	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
-	set_translation(this->position / 100000000);
+	set_translation(this->position / 100000000000);
 }
 
 
@@ -193,7 +193,7 @@ void AstroObject::iter()
 Vector3 AstroObject::calculateForce(real_t distanceSquared, Vector3 direction, real_t mass)
 {
 	//Based on Newtons law of gravity
-	real_t forceNoDirection = G * this->getMass() * mass * MP / distanceSquared;
+	real_t forceNoDirection = G * this->getMass() * mass * MP * 10000000 / distanceSquared;
 	return direction * forceNoDirection;
 }
 
