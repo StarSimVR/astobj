@@ -21,6 +21,7 @@ public:
 	Vector3 orientation;
 	int rotationSpeed;
 	real_t mass;
+	bool removed = false;
 	std::vector<AstroObject*> affectedObjects;
 
 public:
@@ -36,6 +37,8 @@ public:
 	static void _register_methods();
 	void absorbObject(AstroObject* toAbsorb);
 	void free();
+	bool shouldBeRemoved();
+	void removeObject(AstroObject* toRemove);
 
 private:
 	void iter();

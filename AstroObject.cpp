@@ -42,6 +42,8 @@ void AstroObject::_register_methods()
 	register_method("updateInfluence", &AstroObject::updateInfluence);
 	register_method("updatePosition", &AstroObject::updatePosition);
 	register_method("addObject", &AstroObject::addObject);
+	register_method("removeObject", &AstroObject::removeObject);
+	register_method("shouldBeRemoved", &AstroObject::shouldBeRemoved);
 
 	/*Register the properties*/
 	register_property<AstroObject, Vector3>("position", &AstroObject::position, Vector3(0,0,0));
@@ -108,19 +110,8 @@ void AstroObject::updateInfluence()
  */
 void AstroObject::updatePosition(real_t delta)
 {
-	//this->velocity += this->acceleration * delta;
-	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
-	//this->position += this->velocity;
-	//The acceleration has to be reset for the next iteration
-	//this->position += this->velocity * delta + 0.5f * this->acceleration * delta * delta;
-	//this->velocity += this->acceleration * delta;
-	//this->velocity += delta * this->acceleration;
-	// this->position += this->acceleration * 0.5f * delta * delta + this->velocity * delta;
-	//this->velocity += this->acceleration * delta;
 	this->velocity += this->acceleration * 3600 * 3600;
 	this->position += this->velocity;
-	//this->position += this->velocity * delta;
-	//this->position += (this->acceleration * delta / 2 + this->velocity) * delta;
 	this->acceleration = Vector3(0,0,0);
 	//The scene works with very small distances internally, that have to be scaled to be visible
 	set_translation(this->position / 100000000000);
@@ -156,16 +147,14 @@ void AstroObject::iter()
 	
 	for(AstroObject * elem : this->affectedObjects)
 	{
-		if(!elem) continue;
-
 		/*Calculate the force on ourself and the other object*/
 		real_t distance = this->position.distance_to(elem->getPosition());
-		//If the objects collide, we skip for now. This will later be changed to merge the objects
-		if( distance * 10.0f < 1.0f) 
+		//If the objects collide, we merge the objects
+		if( distance / 100000000 < 1.0f) 
 		{
-			// if(this->getMass() >= elem->getMass()) this->absorbObject(elem);
-			// else elem->absorbObject(this);
-			// continue;
+			if(this->getMass() >= elem->getMass()) this->absorbObject(elem);
+			else elem->absorbObject(this);
+			continue;
 		}
 
 		real_t distanceSquared = distance * distance;
@@ -180,6 +169,21 @@ void AstroObject::iter()
 		elem->applyForce(force * -1);
 	}
 	
+}
+
+
+/**
+ *	@brief 			Function to remove an object from the interally stored list of objects
+ *	@param toRemove The object to remove
+ *	@return 		void
+ */
+void AstroObject::removeObject(AstroObject* toRemove)
+{
+	auto it = std::find(this->affectedObjects.begin(), this->affectedObjects.end(), toRemove);
+	if(it != this->affectedObjects.end())
+	{
+		this->affectedObjects.erase(it);
+	}
 }
 
 
@@ -208,6 +212,11 @@ void AstroObject::updateRotation()
 }
 
 
+/**
+ *	@brief 			Function to absorb another object
+ *	@param toAbsorb	Object to absorb
+ *	@return 		void
+ */
 void AstroObject::absorbObject(AstroObject* toAbsorb)
 {
 	this->mass += toAbsorb->getMass();
@@ -215,7 +224,21 @@ void AstroObject::absorbObject(AstroObject* toAbsorb)
 }
 
 
+/**
+ *	@brief 			Function to free a given object
+ *	@return 		void
+ */
 void AstroObject::free()
 {
-	this->queue_free();
+	this->removed = true;
+}
+
+
+/**
+ *	@brief 			Function to state whether the object in question should be removed
+ *	@return 		True, if the object should be removed, else False
+ */
+bool AstroObject::shouldBeRemoved()
+{
+	return this->removed;
 }
