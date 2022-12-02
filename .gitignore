@@ -5,6 +5,7 @@
 *.lib
 *.o
 *.obj
+*.os
 *.so
 
 # Documentation artifacts.
